@@ -1,5 +1,7 @@
 package ch.zli.coworking_space.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -17,8 +19,8 @@ import java.util.UUID;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@Entity(name = "CATEGORY")
-public class CategoryEntity implements Serializable {
+@Entity(name = "PLACE")
+public class PlaceEntity implements Serializable {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -27,19 +29,19 @@ public class CategoryEntity implements Serializable {
     @Type(type = "org.hibernate.type.UUIDCharType")
     UUID id = UUID.randomUUID();
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "location", nullable = false)
+    private String location;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        CategoryEntity gameEntity = (CategoryEntity) o;
-        return id != null && Objects.equals(id, gameEntity.id);
+        if (o == null || getClass() != o.getClass()) return false;
+        PlaceEntity that = (PlaceEntity) o;
+        return Objects.equals(id, that.id) && Objects.equals(location, that.location);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(id, location);
     }
 }
