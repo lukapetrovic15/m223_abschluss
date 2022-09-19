@@ -10,11 +10,11 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>io.viascom</groupId>
-	<artifactId>spring-boot-crud-example</artifactId>
+	<groupId>ch.zli</groupId>
+	<artifactId>coworking_space</artifactId>
 	<version>1.0.0</version>
-	<name>spring-boot-crud-example</name>
-	<description>Demo CRUD project for Spring Boot</description>
+	<name>coworking_space</name>
+	<description>End project</description>
 
 	<properties>
 		<java.version>17</java.version>
