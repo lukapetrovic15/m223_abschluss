@@ -45,25 +45,26 @@ public class AuthController {
                     schema = @Schema(allowableValues = {"password", "refresh_token"})
             )
             @RequestParam(name = "grant_type", required = true)
-            String grantType,
+                    String grantType,
             @Parameter(description = "If refresh_token is selected as grant type this field is needed")
             @RequestParam(name = "refresh_token", required = false)
-            String refreshToken,
+                    String refreshToken,
             @Parameter(description = "If password is selected as grant type this field is needed", required = false)
-            @RequestParam(name = "username", required = false)
-            String username,
+            @RequestParam(name = "email", required = false)
+                    String email,
             @Parameter(description = "If password is selected as grant type this field is needed", required = false)
             @RequestParam(name = "password", required = false)
-            String password) throws GeneralSecurityException, IOException {
+                    String password) throws GeneralSecurityException, IOException {
 
         switch (grantType) {
             case "password" -> {
-                val optionalMember = memberRepository.findByUsername(username);
+                val optionalMember = memberRepository.findByEmail(email);
                 if (optionalMember.isEmpty()) {
                     throw new IllegalArgumentException("Username or password wrong");
                 }
 
-                if (!BCrypt.checkpw(password, optionalMember.get().getPasswordHash())) {
+                // rausnehmen
+                if (!BCrypt.checkpw(password, optionalMember.get().getPassword())) {
                     throw new IllegalArgumentException("Username or password wrong");
                 }
 
@@ -76,7 +77,7 @@ public class AuthController {
                     scopes.add("ADMIN");
                 }
 
-                val newAccessToken = jwtService.createNewJWT(id, member.getId().toString(), member.getUsername(), scopes);
+                val newAccessToken = jwtService.createNewJWT(id, member.getId().toString(), member.getEmail(), scopes);
                 val newRefreshToken = jwtService.createNewJWTRefresh(id, member.getId().toString());
 
                 return new TokenResponse(newAccessToken, newRefreshToken, "Bearer", LocalDateTime.now().plusDays(14).toEpochSecond(ZoneOffset.UTC), LocalDateTime.now().plusDays(1).toEpochSecond(ZoneOffset.UTC));
@@ -98,7 +99,7 @@ public class AuthController {
                     scopes.add("ADMIN");
                 }
 
-                val newAccessToken = jwtService.createNewJWT(id, member.getId().toString(), member.getUsername(), scopes);
+                val newAccessToken = jwtService.createNewJWT(id, member.getId().toString(), member.getEmail(), scopes);
                 val newRefreshToken = jwtService.createNewJWTRefresh(id, member.getId().toString());
 
                 return new TokenResponse(newAccessToken, newRefreshToken, "Bearer", LocalDateTime.now().plusDays(14).toEpochSecond(ZoneOffset.UTC), LocalDateTime.now().plusDays(1).toEpochSecond(ZoneOffset.UTC));
@@ -114,17 +115,25 @@ public class AuthController {
     )
     @PostMapping(value = "/register", produces = "application/json")
     public TokenResponse register(
-            @Parameter(description = "Username / E-Mail", required = true)
-            @RequestParam(name = "username", required = true)
-            String username,
+            @Parameter(description = "Firstname", required = true)
+            @RequestParam(name = "firstname", required = true)
+                    String firstname,
+            @Parameter(description = "Lastname", required = true)
+            @RequestParam(name = "lastname", required = true)
+                    String lastname,
+            @Parameter(description = "E-Mail", required = true)
+            @RequestParam(name = "email", required = true)
+                    String email,
             @Parameter(description = "Password", required = true)
             @RequestParam(name = "password", required = true)
-            String password
+                    String password,
+            @Parameter(description = "isAdmin", required = true)
+            @RequestParam(name = "isAdmin", required = true)
+                    String isAdmin
     ) throws GeneralSecurityException, IOException {
-        String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
-        val newMember = new MemberEntity(UUID.randomUUID(), username, passwordHash, false);
+        val newMember = new MemberEntity(UUID.randomUUID(), firstname, lastname, email, password, false);
         memberRepository.save(newMember);
 
-        return getToken("password", "", username, password);
+        return getToken("password", "", email, password);
     }
 }
