@@ -1,10 +1,13 @@
 package ch.zli.coworking_space.service;
 
+import ch.zli.coworking_space.exception.ObjectNotFoundException;
 import ch.zli.coworking_space.model.MemberEntity;
 import ch.zli.coworking_space.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,26 +22,33 @@ public class MemberService {
         this.repository = repository;
     }
 
+    @Transactional
     public List<MemberEntity> loadAll() {
         log.info("Executing find all games ...");
         return (List<MemberEntity>) repository.findAll();
     }
 
+    @Transactional
     public Optional<MemberEntity> loadOne(UUID id) {
         log.info("Executing find member with id " + id + " ...");
         return repository.findById(id);
     }
 
+    @Transactional
     public MemberEntity create(MemberEntity category) {
         log.info("Executing create category with id " + category.getId() + " ...");
         return repository.save(category);
     }
 
-    public MemberEntity update(MemberEntity updatedMember) {
-        log.info("Executing update member with id " + updatedMember.getId() + " ...");
-        return repository.save(updatedMember);
+    @Transactional
+    public MemberEntity update(MemberEntity member) {
+        log.info("Executing update member with id " + member.getId() + " ...");
+        val memberId = member.getId();
+        repository.findById(memberId).orElseThrow(() -> new ObjectNotFoundException("Member not found with id " + memberId));
+        return repository.save(member);
     }
 
+    @Transactional
     public void delete(UUID id) {
         log.info("Executing delete member with id " + id + " ...");
         repository.deleteById(id);
