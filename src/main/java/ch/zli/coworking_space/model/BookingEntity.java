@@ -59,7 +59,7 @@ public class BookingEntity implements Serializable {
     @Column(name = "endDate", nullable = false)
     private Timestamp endDate;
 
-    @Column(name = "isAccepted", nullable = false)
+    @Column(name = "is_accepted", nullable = false)
     private Boolean isAccepted;
 
     @Override

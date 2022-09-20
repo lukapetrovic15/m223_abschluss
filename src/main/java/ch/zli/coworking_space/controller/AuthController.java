@@ -1,11 +1,10 @@
 package ch.zli.coworking_space.controller;
-
-import ch.zli.coworking_space.repository.MemberRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import ch.zli.coworking_space.model.MemberEntity;
 import ch.zli.coworking_space.model.TokenResponse;
+import ch.zli.coworking_space.repository.MemberRepository;
 import ch.zli.coworking_space.security.JwtServiceHMAC;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,21 +49,20 @@ public class AuthController {
             @RequestParam(name = "refresh_token", required = false)
                     String refreshToken,
             @Parameter(description = "If password is selected as grant type this field is needed", required = false)
-            @RequestParam(name = "email", required = false)
-                    String email,
+            @RequestParam(name = "username", required = false)
+                    String username,
             @Parameter(description = "If password is selected as grant type this field is needed", required = false)
             @RequestParam(name = "password", required = false)
                     String password) throws GeneralSecurityException, IOException {
 
         switch (grantType) {
             case "password" -> {
-                val optionalMember = memberRepository.findByEmail(email);
+                val optionalMember = memberRepository.findByUsername(username);
                 if (optionalMember.isEmpty()) {
                     throw new IllegalArgumentException("Username or password wrong");
                 }
 
-                // rausnehmen
-                if (!BCrypt.checkpw(password, optionalMember.get().getPassword())) {
+                if (!BCrypt.checkpw(password, optionalMember.get().getPasswordHash())) {
                     throw new IllegalArgumentException("Username or password wrong");
                 }
 
@@ -77,7 +75,7 @@ public class AuthController {
                     scopes.add("ADMIN");
                 }
 
-                val newAccessToken = jwtService.createNewJWT(id, member.getId().toString(), member.getEmail(), scopes);
+                val newAccessToken = jwtService.createNewJWT(id, member.getId().toString(), member.getUsername(), scopes);
                 val newRefreshToken = jwtService.createNewJWTRefresh(id, member.getId().toString());
 
                 return new TokenResponse(newAccessToken, newRefreshToken, "Bearer", LocalDateTime.now().plusDays(14).toEpochSecond(ZoneOffset.UTC), LocalDateTime.now().plusDays(1).toEpochSecond(ZoneOffset.UTC));
@@ -99,7 +97,7 @@ public class AuthController {
                     scopes.add("ADMIN");
                 }
 
-                val newAccessToken = jwtService.createNewJWT(id, member.getId().toString(), member.getEmail(), scopes);
+                val newAccessToken = jwtService.createNewJWT(id, member.getId().toString(), member.getUsername(), scopes);
                 val newRefreshToken = jwtService.createNewJWTRefresh(id, member.getId().toString());
 
                 return new TokenResponse(newAccessToken, newRefreshToken, "Bearer", LocalDateTime.now().plusDays(14).toEpochSecond(ZoneOffset.UTC), LocalDateTime.now().plusDays(1).toEpochSecond(ZoneOffset.UTC));
@@ -115,25 +113,23 @@ public class AuthController {
     )
     @PostMapping(value = "/register", produces = "application/json")
     public TokenResponse register(
-            @Parameter(description = "Firstname", required = true)
-            @RequestParam(name = "firstname", required = true)
-                    String firstname,
-            @Parameter(description = "Lastname", required = true)
-            @RequestParam(name = "lastname", required = true)
-                    String lastname,
-            @Parameter(description = "E-Mail", required = true)
-            @RequestParam(name = "email", required = true)
-                    String email,
+            @Parameter(description = "Username / E-Mail", required = true)
+            @RequestParam(name = "username", required = true)
+                    String username,
             @Parameter(description = "Password", required = true)
             @RequestParam(name = "password", required = true)
                     String password,
-            @Parameter(description = "isAdmin", required = true)
-            @RequestParam(name = "isAdmin", required = true)
-                    String isAdmin
+            @Parameter(description = "firstname", required = true)
+            @RequestParam(name = "firstname", required = true)
+                    String firstname,
+            @Parameter(description = "lastname", required = true)
+            @RequestParam(name = "lastname", required = true)
+                    String lastname
     ) throws GeneralSecurityException, IOException {
-        val newMember = new MemberEntity(UUID.randomUUID(), firstname, lastname, email, password, false);
+        String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+        val newMember = new MemberEntity(UUID.randomUUID(), firstname, lastname, username, passwordHash, false);
         memberRepository.save(newMember);
 
-        return getToken("password", "", email, password);
+        return getToken("password", "", username, password);
     }
 }

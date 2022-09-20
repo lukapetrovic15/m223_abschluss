@@ -1,4 +1,4 @@
-// Get all games
+// Get all bookings
 GET http://localhost:8080/games
 Authorization: Bearer {{jwt}}
 
