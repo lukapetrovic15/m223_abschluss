@@ -40,12 +40,24 @@ public class BookingEntity implements Serializable {
     private Boolean isAccepted;
 
     @ManyToOne
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @JoinColumn(name = "member_id")
     private MemberEntity memberEntity;
 
+    @Transient
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Schema(accessMode = Schema.AccessMode.WRITE_ONLY)
+    private UUID member_id;
+
     @ManyToOne
     @JoinColumn(name = "place_id")
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private PlaceEntity placeEntity;
+
+    @Transient
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Schema(accessMode = Schema.AccessMode.WRITE_ONLY)
+    private UUID place_id;
 
     @Override
     public boolean equals(Object o) {
