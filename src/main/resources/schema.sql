@@ -22,8 +22,8 @@ DROP TABLE IF EXISTS BOOKING CASCADE;
 CREATE TABLE BOOKING
 (
     id          UUID,
-    startDate   TIMESTAMP NOT NULL,
-    endDate     TIMESTAMP NOT NULL,
+    start_date   TIMESTAMP NOT NULL,
+    end_date     TIMESTAMP NOT NULL,
     is_accepted BOOLEAN   NOT NULL DEFAULT FALSE,
     member_id   UUID,
     place_id    UUID,
