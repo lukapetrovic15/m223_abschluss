@@ -22,19 +22,16 @@ public class MemberService {
         this.repository = repository;
     }
 
-    @Transactional
     public List<MemberEntity> loadAll() {
         log.info("Executing find all games ...");
-        return (List<MemberEntity>) repository.findAll();
+        return repository.findAll();
     }
 
-    @Transactional
     public Optional<MemberEntity> loadOne(UUID id) {
         log.info("Executing find member with id " + id + " ...");
         return repository.findById(id);
     }
 
-    @Transactional
     public MemberEntity create(MemberEntity category) {
         log.info("Executing create category with id " + category.getId() + " ...");
         return repository.save(category);
@@ -48,7 +45,6 @@ public class MemberService {
         return repository.save(member);
     }
 
-    @Transactional
     public void delete(UUID id) {
         log.info("Executing delete member with id " + id + " ...");
         repository.deleteById(id);

@@ -20,19 +20,16 @@ public class PlaceService {
 
     PlaceService(PlaceRepository repository) { this.repository = repository; }
 
-    @Transactional
     public List<PlaceEntity> loadAll() {
         log.info("Executing find all places ...");
-        return (List<PlaceEntity>) repository.findAll();
+        return repository.findAll();
     }
 
-    @Transactional
     public Optional<PlaceEntity> loadOne(UUID id) {
         log.info("Executing find place with id " + id + " ...");
         return repository.findById(id);
     }
 
-    @Transactional
     public PlaceEntity create(PlaceEntity place) {
         log.info("Executing create place with id " + place.getId() + " ...");
         return repository.save(place);
