@@ -1,13 +1,16 @@
 # coworking_space
 
+<b>Projektbeschreibung</b> <br>
+In diesem Projekt geht es um eine Coworking Space Verwaltungs-Applikation, in der man Plätze buchen kann, um das Angebot des Coworking Spaces zu nutzen. <br>
+
 <b>API documentation:</b> http://localhost:8080/swagger-ui/index.html <br>
 <b>Github:</b> https://github.com/lukapetrovic15/m223_abschluss
 
 
 <b>Wichtige Punkte!</b><br>
-1. Der Swagger Link funktioniert nur, wenn die Applikation gestartet wurde und diese läuft.
+1. Der API Dokumentation (Swagger UI) Link funktioniert nur, wenn die Applikation gestartet wurde und diese auch läuft.
 
-2. Im application.yml File muss die Datasource angepasset werden auf die eigenen Umstände. <br>
+2. Im application.yml File muss die Datasource angepasst werden auf die eigenen Umstände, also speichern auf dem eigenen Gerät. <br>
 URL, die angepasst werden muss:   
 datasource: <br>
 url: jdbc:h2:file:C:\Users\Luka Petrovic\Desktop\M223\m223_abschluss/exampledb
@@ -20,15 +23,12 @@ Die Files befinden sich im resources Ordner.
 In meiner Planung war es vorgegeben, dass sich die Member mit E-Mail und Passwort anmelden, jedoch gibt es nun ein Username. Beides, E-Mail und Username, können hier eingetragen werden.
 
 <b>Client Requests:</b> <br>
-Um die Client Requests ausführen zu können, braucht man ein gültiges Token, genauer gesagt zwei, einmal einen für den Admin und einmal einen für den Member.
+Bevor man die Client Requests ausführen kann, braucht man ein gültiges Token, genauer gesagt zwei, einmal einen für den Admin und einmal einen für den Member.
 
-Diese Tokens erstellt man sich über den Link der API Dokumentation unter Authorization --> /auth/token (ganz oben findet man den Link und die Anforderungen, dass es läuft).
+Diese Tokens erstellt man sich ganz einfach, in dem man im client-requests.rest file ganz unten unter dem Kommentar 'Admin Token' und 'Member Token' das Ganze mit 'Run localhost:8080' ausführt
 
-Hier braucht man die zwei <b>Usernames</b>: admin und member <br>
-Das <b>Passwort</b> ist bei beiden: password1234
-
-Nachdem man dies ausgeführt hat, nimmt man den erstellten Tokens und verwendet ihn für die jeweiligen Rollen, admin und member, und gibt diese im http-client-env.json an!
-Das File "http-client.env.json" befindet sich im http-request Ordner, ausserhalb von src
+Nachdem man diese einzeln ausgeführt hat, kopiert man je einmal aus der Response den access_token (zuerst admin für den admin token, dann member für den member token) und verwendet ihn für die jeweiligen Rollen, admin und member, und gibt diese im http-client-env.json an! <br>
+Das File "http-client.env.json" befindet sich im http-request Ordner im root Verzeichnis
 
 <b>Projekt starten:</b> <br>
 Um das Projekt zu starten, muss man in der RunConfiguration CoworkingSpaceApplication (befindet sich auf der gleichen Höhe wie der Start-Button links) auswählen. 

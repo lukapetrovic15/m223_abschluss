@@ -148,8 +148,13 @@ Authorization: Bearer {{jwt}}
 //Authorization
 
 // Renew Auth-Token
+// Admin Token
+POST http://localhost:8080/auth/token?grant_type=password&username=admin&password=password1234
+
+###
+
+// Member Token
 POST http://localhost:8080/auth/token?grant_type=password&username=member&password=password1234
-Authorization: Bearer {{jwt}}
 
 ###
 
