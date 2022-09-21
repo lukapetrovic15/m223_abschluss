@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/booking")
+@RequestMapping("/bookings")
 @Tag(name = "Booking", description = "Booking management endpoints")
 public class BookingController {
 

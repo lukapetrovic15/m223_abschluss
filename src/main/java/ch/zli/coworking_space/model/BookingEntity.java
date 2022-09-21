@@ -20,7 +20,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@Entity(name = "GAME")
+@Entity(name = "BOOKING")
 public class BookingEntity implements Serializable {
 
     @Id
@@ -30,48 +30,33 @@ public class BookingEntity implements Serializable {
     @Type(type = "org.hibernate.type.UUIDCharType")
     UUID id = UUID.randomUUID();
 
-
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    private MemberEntity member;
-
-    @Transient
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Schema(accessMode = Schema.AccessMode.WRITE_ONLY)
-    private UUID member_id;
-
-
-    @ManyToOne
-    @JoinColumn(name = "place_id", nullable = false)
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    private PlaceEntity place;
-
-    @Transient
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Schema(accessMode = Schema.AccessMode.WRITE_ONLY)
-    private UUID place_id;
-
-
-    @Column(name = "startDate", nullable = false)
+    @Column(name = "start_date", nullable = false)
     private Timestamp startDate;
 
-    @Column(name = "endDate", nullable = false)
+    @Column(name = "end_date", nullable = false)
     private Timestamp endDate;
 
     @Column(name = "is_accepted", nullable = false)
     private Boolean isAccepted;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private MemberEntity memberEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "place_id")
+    private PlaceEntity placeEntity;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BookingEntity that = (BookingEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(member, that.member) && Objects.equals(member_id, that.member_id) && Objects.equals(place, that.place) && Objects.equals(place_id, that.place_id) && Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate) && Objects.equals(isAccepted, that.isAccepted);
+        return id.equals(that.id) && startDate.equals(that.startDate) && endDate.equals(that.endDate) && isAccepted.equals(that.isAccepted) && memberEntity.equals(that.memberEntity) && placeEntity.equals(that.placeEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, member, member_id, place, place_id, startDate, endDate, isAccepted);
+        return Objects.hash(id, startDate, endDate, isAccepted, memberEntity, placeEntity);
     }
 }
