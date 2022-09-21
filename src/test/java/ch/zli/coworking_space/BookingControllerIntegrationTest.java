@@ -126,7 +126,7 @@ public class BookingControllerIntegrationTest {
     // PUT
     @Test
     @Description("Update an existing booking")
-    public void testPut() throws Exception {
+    public void bookingShouldBeUpdated() throws Exception {
         BookingEntity bookingEntity = new BookingEntity();
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
